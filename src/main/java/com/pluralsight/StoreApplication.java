@@ -1,46 +1,40 @@
 package com.pluralsight;
+import java.io.*;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
-public class StoreApplication
-{
+public class StoreApplication {
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList<Product> products;
-    static ArrayList<Product> shoppingCart;
+    private static Inventory inventory;
+    private static CustomerCart customerCart;
 
-    static void main()
-    {
+    public static void main(String[] args) {
         // make sure all products are loaded before we display the home screen
-        products = loadProducts();
-
+          inventory = Inventory.createLoadedInventory();
+          customerCart = new CustomerCart();
+          inventory.displayProducts();
         // start the application
         displayHomeScreen();
     }
 
-    static void displayHomeScreen()
-    {
-        while(true)
-        {
+    static void displayHomeScreen() {
+        while (true) {
             System.out.println();
+            System.out.println("---------------------------------");
             System.out.println("Welcome to my Store!");
             System.out.println("---------------------------------");
-            System.out.println();
             System.out.println("D) Display Products");
             System.out.println("C) Display Cart");
             System.out.println("X) Exit");
             System.out.print("Make a selection: ");
             String choice = scanner.nextLine().toUpperCase().strip();
-
             System.out.println();
 
-            switch (choice)
-            {
+            switch (choice) {
                 case "D":
-                    System.out.println("Create the Product Search Screen");
+                    searchScreen();
                     break;
                 case "C":
-                    System.out.println("Create the Display Cart Screen");
+                    customerCart.displayCartScreen();
                     break;
                 case "X":
                     System.out.println("Goodbye!");
@@ -52,16 +46,24 @@ public class StoreApplication
         }
     }
 
-    static ArrayList<Product> loadProducts()
-    {
-        // 1. create the new ArrayList
-        ArrayList<Product> products = new ArrayList<>();
+    public static void searchScreen() {
+        System.out.println("Would you like to search for a product or filter through the list of products?\n" +
+                "S) Search Products\n" +
+                "F) Filter List of Products\n" +
+                "X) Go Back\n");
+        String choice = scanner.nextLine().toUpperCase().strip();
 
-        // 2. populate the list
-        // load all products from the "data/products.csv" file here
-
-
-        // 3. return the ArrayList
-        return products;
+        switch (choice) {
+            case "S":
+                customerCart.addToCart(inventory.searchProductOptionMenu());
+                break;
+            case "F":
+                customerCart.addToCart(inventory.searchProductFromDepartment());
+                break;
+            case "X":
+                return;
+            default:
+                System.out.println("Invalid selection. Please try again.");
+        }
     }
 }
